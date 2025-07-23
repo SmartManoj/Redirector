@@ -288,6 +288,150 @@ a.disabled:hover, button[disabled]:hover {
   width: 0;
 }
 
+/* Bulk selection controls */
+#bulk-controls {
+  max-width: 800px;
+  margin: 10px auto;
+  padding: 15px;
+  background: #f8f8f8;
+  border: 2px solid #2196F3;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: none; /* Hidden by default */
+}
+
+#bulk-controls:not(.hidden) {
+  display: block !important;
+}
+
+.bulk-selection {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.bulk-instructions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #4CAF50;
+  color: white;
+  border-radius: 4px;
+  font-size: 14px;
+  position: relative;
+}
+
+.arrow-icon {
+  font-weight: bold;
+  color: #fff;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 5px;
+  margin-left: 10px;
+}
+
+.close-btn:hover {
+  opacity: 0.8;
+}
+
+/* Dark mode styles for bulk controls */
+@media (prefers-color-scheme: dark) {
+  #bulk-controls {
+    background: #2d2d2d;
+    border-color: #2196F3;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .bulk-selection label {
+    color: #e0e0e0;
+  }
+  
+  .bulk-selection {
+    border-bottom-color: #555;
+  }
+  
+  .bulk-instructions {
+    background: #2E7D32;
+  }
+}
+
+/* JavaScript-controlled dark theme classes for bulk controls */
+#bulk-controls.dark-theme {
+  background: #2d2d2d;
+  border-color: #2196F3;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+#bulk-controls.dark-theme .bulk-selection label {
+  color: #e0e0e0;
+}
+
+#bulk-controls.dark-theme .bulk-selection {
+  border-bottom-color: #555;
+}
+
+#bulk-controls.dark-theme .bulk-instructions {
+  background: #2E7D32;
+}
+
+.bulk-selection {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.bulk-selection label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
+.bulk-selection button {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bulk-selection button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Remove the left-side checkboxes and use existing right-side ones */
+.redirect-select {
+  display: none !important;
+}
+
+/* Hide any potential left-side checkboxes */
+.redirect-row input[type="checkbox"]:not(.toggle-container input) {
+  display: none !important;
+}
+
+/* Show existing checkboxes in bulk mode */
+.bulk-mode .toggle-container {
+  display: block !important;
+}
+
 .checkmark {
   position: absolute;
   height: 15px;
@@ -362,6 +506,44 @@ a.disabled:hover, button[disabled]:hover {
   overflow: hidden;
   white-space: nowrap;
   vertical-align: top;
+}
+
+#delete-all-form {
+  position: fixed;
+  padding: 20px;
+  width: 500px;
+  background: white;
+  border: solid 2px #d32f2f;
+  border-radius: 8px;
+  z-index: 6000;
+  left: 50%;
+  margin-left: -260px;
+  top: 50%;
+  margin-top: -150px;
+  height: auto;
+  min-height: 200px;
+  display: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+#delete-all-form h3 {
+  color: #d32f2f;
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+#delete-all-form p {
+  color: #333;
+  margin: 10px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#delete-all-form p strong {
+  color: #d32f2f;
+  font-weight: bold;
 }
 
 /* Edit form */
@@ -670,4 +852,66 @@ footer small a:hover {
     border-color: rgb(68,68,68) !important ;
     border-radius: 2px;
   }
+}
+
+#delete-all-form .button-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#delete-all-form .button-container button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#delete-all-form .button-container button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark mode styles for delete all form */
+@media (prefers-color-scheme: dark) {
+  #delete-all-form {
+    background: #2d2d2d;
+    border-color: #f44336;
+    color: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  }
+  
+  #delete-all-form h3 {
+    color: #f44336;
+  }
+  
+  #delete-all-form p {
+    color: #e0e0e0;
+  }
+  
+  #delete-all-form p strong {
+    color: #f44336;
+  }
+}
+
+/* JavaScript-controlled dark theme classes */
+#delete-all-form.dark-theme {
+  background: #2d2d2d;
+  border-color: #f44336;
+  color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+#delete-all-form.dark-theme h3 {
+  color: #f44336;
+}
+
+#delete-all-form.dark-theme p {
+  color: #e0e0e0;
+}
+
+#delete-all-form.dark-theme p strong {
+  color: #f44336;
 }

@@ -41,6 +41,19 @@
 			</div>
 		</div>
 
+		<!-- Confirmation form for deleting all redirects -->
+		<div id="delete-all-form">
+			<h3>Delete All Redirects</h3>
+			<div>
+				<p>Are you sure you want to delete ALL redirects? This action cannot be undone.</p>
+				<p><strong>Warning:</strong> This will remove all your redirect rules and reset to default settings.</p>
+			</div>
+			<div class="button-container">
+				<button id="confirm-delete-all" class="btn red large">Yes, delete all redirects</button>
+				<button id="cancel-delete-all" class="btn grey large">No, keep my redirects</button>
+			</div>
+		</div>
+
 
 		<!-- Form for creating and editing redirects -->
 		<div id="edit-redirect-form">
@@ -146,6 +159,16 @@
 				<a class="btn blue large" href="help.html" target="_blank">Help</a>
 			</div>
 
+			<!-- Bulk selection controls -->
+			<div id="bulk-controls" class="hidden">
+				<div class="bulk-selection">
+					<label><input type="checkbox" id="select-all-checkbox"> Select All</label>
+					<button id="delete-selected-btn" class="btn red medium">Delete Selected</button>
+					<button id="delete-all-bulk-btn" class="btn red medium">Delete All</button>
+					<button id="cancel-bulk-btn" class="btn grey medium">Cancel</button>
+				</div>
+			</div>
+
 
 			<div id="message-box">
 				<span data-bind="message" id="message"></span>
@@ -156,7 +179,7 @@
 			<div class="redirect-table">
 				<div class="redirect-rows">
 					<div class="redirect-row" id="redirect-row-template" >
-							<h4><span class="disabled-marker" data-show="disabled">[Disabled] </span><span data-bind="description" data-class="disabled:disabled"></span></h4>
+						<h4><span class="disabled-marker" data-show="disabled">[Disabled] </span><span data-bind="description" data-class="disabled:disabled"></span></h4>
 							<div class="redirect-info" data-class="disabled:disabled">
 								<div>
 									<label>Redirect:</label>

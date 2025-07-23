@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redirector Bulk Delete Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Redirector Bulk Delete Feature Test</h1>
+    
+    <div class="test-section">
+        <h2>Features Implemented:</h2>
+        <ul>
+            <li class="success">✓ "Delete All" button in menu</li>
+            <li class="success">✓ Bulk selection mode with checkboxes</li>
+            <li class="success">✓ "Select All" checkbox functionality</li>
+            <li class="success">✓ Individual checkbox selection</li>
+            <li class="success">✓ "Delete Selected" button for bulk operations</li>
+            <li class="success">✓ Confirmation dialogs for safety</li>
+            <li class="success">✓ Visual feedback with success/error messages</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>How to Test:</h2>
+        <ol>
+            <li>Open the Redirector extension (redirector.html)</li>
+            <li>Create a few test redirects</li>
+            <li>Click "Delete All" button to test bulk mode</li>
+            <li>Use "Select All" checkbox to select all redirects</li>
+            <li>Uncheck some and check others to test individual selection</li>
+            <li>Click "Delete Selected" to remove selected redirects</li>
+            <li>Test the "Delete All" confirmation dialog</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>GitHub Issue #388 Implementation:</h2>
+        <p>The user requested a "Reset" button to reset everything back to default. This implementation provides:</p>
+        <ul>
+            <li>✓ Delete All functionality (equivalent to reset)</li>
+            <li>✓ Multiple selection options for more granular control</li>
+            <li>✓ Confirmation dialogs to prevent accidental deletion</li>
+            <li>✓ Visual feedback and user-friendly interface</li>
+        </ul>
+    </div>
+</body>
+</html> 

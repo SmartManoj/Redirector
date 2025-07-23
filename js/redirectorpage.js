@@ -3,6 +3,7 @@ var options = {
 	isSyncEnabled : false
 };
 var template;
+var bulkMode = false;
 
 function normalize(r) {
 	return new Redirect(r).toObject(); //Cleans out any extra props, and adds default values for missing ones.
@@ -265,6 +266,94 @@ function moveDownBottom(index) {
 	saveChanges();
 }
 
+function deleteAllRedirects() {
+	showForm('#delete-all-form');
+}
+
+function confirmDeleteAll() {
+	REDIRECTS = [];
+	renderRedirects();
+	saveChanges();
+	hideForm('#delete-all-form');
+	showMessage('All redirects have been deleted.', true);
+}
+
+function cancelDeleteAll() {
+	hideForm('#delete-all-form');
+}
+
+function toggleBulkMode() {
+	bulkMode = !bulkMode;
+	const redirectTable = el('.redirect-table');
+	const bulkControls = el('#bulk-controls');
+	const organizeBtn = el('#organize-mode');
+	
+	console.log('Toggle bulk mode:', bulkMode);
+	console.log('Bulk controls element:', bulkControls);
+	
+	if (bulkMode) {
+		redirectTable.classList.add('bulk-mode');
+		show(bulkControls);
+		organizeBtn.textContent = 'Cancel Organize';
+		console.log('Bulk mode activated');
+	} else {
+		redirectTable.classList.remove('bulk-mode');
+		hide(bulkControls);
+		organizeBtn.textContent = 'Organize';
+		// Uncheck all checkboxes
+		document.querySelectorAll('.toggle-container input.checkbox').forEach(cb => cb.checked = false);
+		el('#select-all-checkbox').checked = false;
+		console.log('Bulk mode deactivated');
+	}
+}
+
+function selectAllRedirects() {
+	const selectAllCheckbox = el('#select-all-checkbox');
+	const checkboxes = document.querySelectorAll('.toggle-container input.checkbox');
+	
+	checkboxes.forEach(cb => {
+		cb.checked = selectAllCheckbox.checked;
+	});
+}
+
+function updateSelectAllState() {
+	const selectAllCheckbox = el('#select-all-checkbox');
+	const checkboxes = document.querySelectorAll('.toggle-container input.checkbox');
+	const checkedBoxes = document.querySelectorAll('.toggle-container input.checkbox:checked');
+	
+	selectAllCheckbox.checked = checkboxes.length > 0 && checkboxes.length === checkedBoxes.length;
+	selectAllCheckbox.indeterminate = checkedBoxes.length > 0 && checkedBoxes.length < checkboxes.length;
+}
+
+function deleteSelectedRedirects() {
+	const selectedCheckboxes = document.querySelectorAll('.toggle-container input.checkbox:checked');
+	
+	if (selectedCheckboxes.length === 0) {
+		showMessage('No redirects selected for deletion.', false);
+		return;
+	}
+	
+	const count = selectedCheckboxes.length;
+	if (confirm(`Are you sure you want to delete ${count} selected redirect${count > 1 ? 's' : ''}? This action cannot be undone.`)) {
+		// Get indices in reverse order to avoid shifting issues
+		const indices = Array.from(selectedCheckboxes).map(cb => {
+			const container = cb.closest('.redirect-row');
+			return parseInt(container.getAttribute('data-index'));
+		}).sort((a, b) => b - a);
+		
+		indices.forEach(index => {
+			REDIRECTS.splice(index, 1);
+		});
+		
+		renderRedirects();
+		saveChanges();
+		showMessage(`${count} redirect${count > 1 ? 's' : ''} deleted successfully.`, true);
+		
+		// Exit bulk mode
+		toggleBulkMode();
+	}
+}
+
 //All the setup stuff for the page
 function pageLoad() {
 	template = el('#redirect-row-template');
@@ -315,6 +404,21 @@ function pageLoad() {
 	//Setup event listeners
 	el('#hide-message').addEventListener('click', hideMessage);
 	el('#storage-sync-option input').addEventListener('click', toggleSyncSetting);
+	el('#organize-mode').addEventListener('click', toggleBulkMode);
+	el('#select-all-checkbox').addEventListener('change', selectAllRedirects);
+	el('#delete-selected-btn').addEventListener('click', deleteSelectedRedirects);
+	el('#delete-all-bulk-btn').addEventListener('click', deleteAllRedirects);
+	el('#cancel-bulk-btn').addEventListener('click', toggleBulkMode);
+	el('#confirm-delete-all').addEventListener('click', confirmDeleteAll);
+	el('#cancel-delete-all').addEventListener('click', cancelDeleteAll);
+	el('#close-instructions').addEventListener('click', function() {
+		el('.bulk-instructions').style.display = 'none';
+	});
+	el('.redirect-rows').addEventListener('change', function(ev) {
+		if (ev.target.classList.contains('checkbox')) {
+			updateSelectAllState();
+		}
+	});
 	el('.redirect-rows').addEventListener('click', function(ev) {
 		if(ev.target.type == 'checkbox') {
 			ev.target.nextElementSibling.classList.add("checkMarked");
@@ -342,12 +446,29 @@ function updateFavicon(e) {
 	let type = e.matches ? 'dark' : 'light'
 	el('link[rel="shortcut icon"]').href = `images/icon-${type}-theme-32.png`;
 	chrome.runtime.sendMessage({type: "update-icon"}); //Only works if this page is open, but still, better than nothing...
+	
+	// Update form themes for dark/light mode
+	updateFormThemes(e.matches);
+}
+
+function updateFormThemes(isDark) {
+	const deleteAllForm = el('#delete-all-form');
+	const bulkControls = el('#bulk-controls');
+	
+	if (isDark) {
+		deleteAllForm.classList.add('dark-theme');
+		bulkControls.classList.add('dark-theme');
+	} else {
+		deleteAllForm.classList.remove('dark-theme');
+		bulkControls.classList.remove('dark-theme');
+	}
 }
 
 let mql = window.matchMedia('(prefers-color-scheme:dark)');
 
 mql.onchange = updateFavicon;
 updateFavicon(mql);
+updateFormThemes(mql.matches);
 
 function toggleGrouping(index) {
 	if(REDIRECTS[index]) {
