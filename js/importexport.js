@@ -88,8 +88,50 @@ function updateExportLink() {
 
 updateExportLink();
 
+function importFromClipboard() {
+	navigator.clipboard.readText().then(function(clipboardText) {
+		if (!clipboardText || clipboardText.trim() === '') {
+			showMessage('Clipboard is empty or contains no text.');
+			return;
+		}
+
+		var data;
+		try {
+			data = JSON.parse(clipboardText);
+		} catch(e) {
+			showMessage('Failed to parse JSON data from clipboard, invalid JSON: ' + (e.message||'').substr(0,100));
+			return;
+		}
+
+		if (!data.redirects) {
+			showMessage('Invalid JSON, missing "redirects" property');
+			return;
+		}
+
+		var imported = 0, existing = 0;
+		for (var i = 0; i < data.redirects.length; i++) {
+			var r = new Redirect(data.redirects[i]);
+			r.updateExampleResult();
+			if (REDIRECTS.some(function(i) { return new Redirect(i).equals(r);})) {
+				existing++;
+			} else {
+				REDIRECTS.push(r.toObject());
+				imported++;
+			}
+		}
+		
+		showImportedMessage(imported, existing);
+
+		saveChanges();
+		renderRedirects();
+	}).catch(function(err) {
+		showMessage('Failed to read clipboard: ' + err.message);
+	});
+}
+
 function setupImportExportEventListeners() {
 	el("#import-file").addEventListener('change', importRedirects);
+	el("#import-clipboard").addEventListener('click', importFromClipboard);
 	el("#export-link").addEventListener('mousedown', updateExportLink);
 }
 
